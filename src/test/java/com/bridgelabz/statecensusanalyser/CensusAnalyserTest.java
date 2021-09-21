@@ -14,7 +14,8 @@ public class CensusAnalyserTest
 	private static final String INDIA_STATE_CODE_CSV = "./src/test/resources/IndianStateCode.csv";
 	private static final String WRONG_STATE_CODE_CSV_PATH = "./src/main/resources/IndianStateCode.csv";
 	private static final String STATE_CODE_INCORRECT_FILE_FORMAT = "./src/test/resources/IndianStateCode.txt";
-	
+	private static final String STATE_CODES_WITH_WRONG_DELIMITER = "./src/test/resources/StateCodeWrongDelimiter.csv";
+	private static final String STATE_CODES_WITH_INCORRECT_HEADER = "./src/test/resources/StateCodeWrongHeader.csv";
 	
 	@Test
 	public void givenIndianCensusCSVFile_WhenCorrectPath_ShouldReturnCorrectRecords() 
@@ -24,8 +25,7 @@ public class CensusAnalyserTest
 			int numOfRecords = censusAnalyser.LoadCensusData(INDIA_STATE_CENSUS_CSV_FILE_PATH);
 			Assert.assertEquals(33, numOfRecords);
 		} 
-		catch (CensusAnalyserException e) 
-		{
+		catch (CensusAnalyserException e) {
 		}
 		
 	}
@@ -127,5 +127,37 @@ public class CensusAnalyserTest
 	        }
 	    }
 
-	    
+	    @Test
+	    public void givenIndianStateCSVFile_WhenCustomDelimiter_ShouldThrowException()
+	    {
+	        try
+	        {
+	        	StateCensusAnalyser censusAnalyser = new StateCensusAnalyser();
+		        ExpectedException exceptionRule =  ExpectedException.none();
+		        exceptionRule.expect(CensusAnalyserException.class);
+	            censusAnalyser.loadStateCodeData(STATE_CODES_WITH_WRONG_DELIMITER);
+	        }
+	        catch (CensusAnalyserException e)
+	        {
+	            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_HEADER_AND_DELIMITER, e.type);
+	        }
+	    }
+
+	    @Test
+	    public void givenIndiaStateCodeCSVFile_WhenIncorrectHeader_ShouldThrowException()
+	    {
+	        try
+	        {
+	        	StateCensusAnalyser censusAnalyser = new StateCensusAnalyser();
+		        ExpectedException exceptionRule = ExpectedException.none();
+		        exceptionRule.expect(CensusAnalyserException.class);
+	            censusAnalyser.loadStateCodeData(STATE_CODES_WITH_INCORRECT_HEADER);
+	        }
+	        catch (CensusAnalyserException e)
+	        {
+	            Assert.assertEquals(CensusAnalyserException.ExceptionType.INVALID_HEADER_AND_DELIMITER, e.type);
+	        }
+	    }
+
+
 }
